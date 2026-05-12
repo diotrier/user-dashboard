@@ -1,7 +1,6 @@
-// app/users/UsersTable.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { EnrichedUser } from '@/types';
 
@@ -9,23 +8,30 @@ interface Props {
   users: EnrichedUser[];
 }
 
-// Tipe filter yang tersedia
 type FilterType = 'all' | 'hasPending' | 'noCompleted';
+
+const PER_PAGE = 5; // jumlah user per halaman
 
 export default function UsersTable({ users }: Props) {
   const [search, setSearch] = useState('');
   const [sortAsc, setSortAsc] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
+  const [currentPage, setCurrentPage] = useState(1); // ← state halaman aktif
 
+  // Reset ke halaman 1 setiap kali search/filter berubah
+  // Supaya tidak stuck di halaman yang tidak ada isinya
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filter]);
+
+  // Filter + sort
   const filtered = users
     .filter((u) => {
-      // Filter 1: search by name/email
       const q = search.toLowerCase();
       const matchSearch =
         u.name.toLowerCase().includes(q) ||
         u.email.toLowerCase().includes(q);
 
-      // Filter 2: filter tambahan
       const matchFilter =
         filter === 'all' ? true :
         filter === 'hasPending' ? u.pendingTodos > 0 :
@@ -39,11 +45,16 @@ export default function UsersTable({ users }: Props) {
       return sortAsc ? result : -result;
     });
 
+  // Hitung pagination
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const start = (currentPage - 1) * PER_PAGE;
+  const end = start + PER_PAGE;
+  const paginated = filtered.slice(start, end); // ← hanya user di halaman ini
+
   return (
     <div>
-      {/* Baris kontrol: search + filter + sort */}
+      {/* Kontrol: search + filter + sort */}
       <div className="mb-4 flex flex-wrap gap-3 items-center">
-        {/* Search */}
         <input
           type="search"
           placeholder="Cari nama atau email..."
@@ -52,7 +63,6 @@ export default function UsersTable({ users }: Props) {
           className="border border-gray-300 rounded px-3 py-2 w-64 text-sm"
         />
 
-        {/* Filter buttons */}
         <div className="flex gap-2">
           {[
             { value: 'all', label: 'Semua' },
@@ -73,7 +83,6 @@ export default function UsersTable({ users }: Props) {
           ))}
         </div>
 
-        {/* Sort */}
         <button
           onClick={() => setSortAsc(!sortAsc)}
           className="border border-gray-300 rounded px-3 py-2 text-sm hover:bg-gray-50 ml-auto"
@@ -82,12 +91,13 @@ export default function UsersTable({ users }: Props) {
         </button>
       </div>
 
-      {/* Info jumlah hasil */}
+      {/* Info hasil */}
       <p className="text-sm text-gray-500 mb-3">
         Menampilkan {filtered.length} dari {users.length} users
+        {totalPages > 1 && ` — halaman ${currentPage} dari ${totalPages}`}
       </p>
 
-      {/* Tabel — desktop */}
+      {/* Tabel desktop */}
       <div className="overflow-x-auto hidden md:block">
         <table className="w-full border-collapse text-sm">
           <thead>
@@ -101,7 +111,7 @@ export default function UsersTable({ users }: Props) {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {paginated.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
                   Tidak ada user yang cocok.
@@ -114,7 +124,7 @@ export default function UsersTable({ users }: Props) {
                 </td>
               </tr>
             ) : (
-              filtered.map((user) => (
+              paginated.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 border border-gray-200">
                     <Link href={`/users/${user.id}`} className="text-blue-600 hover:underline font-medium">
@@ -137,17 +147,20 @@ export default function UsersTable({ users }: Props) {
         </table>
       </div>
 
-      {/* Cards — mobile */}
+      {/* Cards mobile */}
       <div className="md:hidden flex flex-col gap-3">
-        {filtered.length === 0 ? (
+        {paginated.length === 0 ? (
           <p className="text-center text-gray-500 py-8">
             Tidak ada user yang cocok.{' '}
-            <button onClick={() => { setSearch(''); setFilter('all'); }} className="text-blue-600 hover:underline">
+            <button
+              onClick={() => { setSearch(''); setFilter('all'); }}
+              className="text-blue-600 hover:underline"
+            >
               Reset filter
             </button>
           </p>
         ) : (
-          filtered.map((user) => (
+          paginated.map((user) => (
             <Link
               key={user.id}
               href={`/users/${user.id}`}
@@ -164,6 +177,46 @@ export default function UsersTable({ users }: Props) {
           ))
         )}
       </div>
+
+      {/* ── PAGINATION ── */}
+      {totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-center gap-2">
+
+          {/* Tombol Previous */}
+          <button
+            onClick={() => setCurrentPage((p) => p - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ← Prev
+          </button>
+
+          {/* Nomor halaman */}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`w-9 h-9 text-sm rounded border transition-colors ${
+                page === currentPage
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          {/* Tombol Next */}
+          <button
+            onClick={() => setCurrentPage((p) => p + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next →
+          </button>
+
+        </div>
+      )}
     </div>
   );
 }

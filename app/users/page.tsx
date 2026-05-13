@@ -2,7 +2,7 @@ import { User, Post, Todo, EnrichedUser } from '@/types';
 import UsersTable from './UsersTable';
 
 async function getData() {
-
+// await new Promise((resolve) => setTimeout(resolve, 3000));
   const [usersRes, postsRes, todosRes] = await Promise.all([
     fetch('https://jsonplaceholder.typicode.com/users', { next: { revalidate: 60 } }),
     fetch('https://jsonplaceholder.typicode.com/posts', { next: { revalidate: 60 } }),

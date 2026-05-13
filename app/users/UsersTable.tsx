@@ -10,16 +10,13 @@ interface Props {
 
 type FilterType = 'all' | 'hasPending' | 'noCompleted';
 
-const PER_PAGE = 5; // jumlah user per halaman
+const PER_PAGE = 5; 
 
 export default function UsersTable({ users }: Props) {
   const [search, setSearch] = useState('');
   const [sortAsc, setSortAsc] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
-  const [currentPage, setCurrentPage] = useState(1); // ← state halaman aktif
-
-  // Reset ke halaman 1 setiap kali search/filter berubah
-  // Supaya tidak stuck di halaman yang tidak ada isinya
+  const [currentPage, setCurrentPage] = useState(1); 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, filter]);
@@ -45,15 +42,13 @@ export default function UsersTable({ users }: Props) {
       return sortAsc ? result : -result;
     });
 
-  // Hitung pagination
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const start = (currentPage - 1) * PER_PAGE;
   const end = start + PER_PAGE;
-  const paginated = filtered.slice(start, end); // ← hanya user di halaman ini
+  const paginated = filtered.slice(start, end); 
 
   return (
     <div>
-      {/* Kontrol: search + filter + sort */}
       <div className="mb-4 flex flex-wrap gap-3 items-center">
         <input
           type="search"
@@ -66,7 +61,7 @@ export default function UsersTable({ users }: Props) {
         <div className="flex gap-2">
           {[
             { value: 'all', label: 'Semua' },
-            { value: 'hasPending', label: 'Ada Pending' },
+            { value: 'hasPending', label: 'Pending' },
             { value: 'noCompleted', label: 'Belum Ada yang Selesai' },
           ].map((opt) => (
             <button
@@ -91,7 +86,7 @@ export default function UsersTable({ users }: Props) {
         </button>
       </div>
 
-      {/* Info hasil */}
+   
       <p className="text-sm text-gray-500 mb-3">
         Menampilkan {filtered.length} dari {users.length} users
         {totalPages > 1 && ` — halaman ${currentPage} dari ${totalPages}`}
@@ -106,8 +101,8 @@ export default function UsersTable({ users }: Props) {
               <th className="px-4 py-3 border border-gray-200">Email</th>
               <th className="px-4 py-3 border border-gray-200">Website</th>
               <th className="px-4 py-3 border border-gray-200 text-center">Posts</th>
-              <th className="px-4 py-3 border border-gray-200 text-center">✅ Selesai</th>
-              <th className="px-4 py-3 border border-gray-200 text-center">⏳ Pending</th>
+              <th className="px-4 py-3 border border-gray-200 text-center">Selesai</th>
+              <th className="px-4 py-3 border border-gray-200 text-center">Pending</th>
             </tr>
           </thead>
           <tbody>
@@ -147,7 +142,7 @@ export default function UsersTable({ users }: Props) {
         </table>
       </div>
 
-      {/* Cards mobile */}
+      {/* Cards*/}
       <div className="md:hidden flex flex-col gap-3">
         {paginated.length === 0 ? (
           <p className="text-center text-gray-500 py-8">
@@ -178,11 +173,10 @@ export default function UsersTable({ users }: Props) {
         )}
       </div>
 
-      {/* ── PAGINATION ── */}
+      {/* ── PAGINATION SECTION ── */}
       {totalPages > 1 && (
         <div className="mt-6 flex items-center justify-center gap-2">
 
-          {/* Tombol Previous */}
           <button
             onClick={() => setCurrentPage((p) => p - 1)}
             disabled={currentPage === 1}
@@ -191,7 +185,7 @@ export default function UsersTable({ users }: Props) {
             ← Prev
           </button>
 
-          {/* Nomor halaman */}
+        
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
             <button
               key={page}
@@ -206,7 +200,7 @@ export default function UsersTable({ users }: Props) {
             </button>
           ))}
 
-          {/* Tombol Next */}
+         
           <button
             onClick={() => setCurrentPage((p) => p + 1)}
             disabled={currentPage === totalPages}

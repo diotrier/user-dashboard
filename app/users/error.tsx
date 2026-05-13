@@ -1,5 +1,5 @@
-// app/users/error.tsx
-'use client'; // error boundary harus client component
+
+'use client'; 
 
 interface Props {
   error: Error;

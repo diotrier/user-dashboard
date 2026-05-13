@@ -1,4 +1,3 @@
-// app/users/[id]/not-found.tsx
 
 import Link from 'next/link';
 

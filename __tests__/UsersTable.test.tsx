@@ -1,5 +1,3 @@
-// __tests__/UsersTable.test.tsx
-
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import UsersTable from '@/app/users/UsersTable';
@@ -13,8 +11,6 @@ jest.mock('next/link', () => {
   return MockLink;
 });
 
-// Helper: karena ada tabel desktop + cards mobile,
-// nama user muncul 2x — kita cukup cek minimal 1 ada
 function expectVisible(name: string) {
   expect(screen.getAllByText(name).length).toBeGreaterThan(0);
 }
@@ -24,7 +20,7 @@ function expectNotVisible(name: string) {
 
 describe('UsersTable', () => {
 
-  // ── Test 1: Render dasar ──────────────────────────────
+  //Test 1 
   it('menampilkan semua users', () => {
     render(<UsersTable users={mockUsers} />);
 
@@ -44,8 +40,8 @@ describe('UsersTable', () => {
     expect(screen.getAllByText('3').length).toBeGreaterThan(0);
   });
 
-  // ── Test 2: Search ────────────────────────────────────
-  it('memfilter users berdasarkan nama', async () => {
+  // ── Test 2
+  it('filter users berdasarkan nama', async () => {
     const user = userEvent.setup();
     render(<UsersTable users={mockUsers} />);
 
@@ -68,7 +64,7 @@ describe('UsersTable', () => {
     expectNotVisible('Leanne Graham');
   });
 
-  // ── Test 3: Filter tambahan ───────────────────────────
+  // ── Test 3
   it('filter "Ada Pending" hanya menampilkan user yang punya pending todos', async () => {
     const user = userEvent.setup();
     render(<UsersTable users={mockUsers} />);
@@ -94,7 +90,7 @@ describe('UsersTable', () => {
     expectNotVisible('Clementine Bauch');
   });
 
-  // ── Test 4: Empty state ───────────────────────────────
+  // ── Test 4
   it('menampilkan pesan kosong ketika tidak ada hasil search', async () => {
     const user = userEvent.setup();
     render(<UsersTable users={mockUsers} />);
@@ -110,7 +106,7 @@ describe('UsersTable', () => {
     const user = userEvent.setup();
     render(<UsersTable users={mockUsers} />);
 
-    // Ketik sesuatu yang tidak ada hasilnya
+    // Ketik tidak ada hasilnya
     const input = screen.getByPlaceholderText('Cari nama atau email...');
     await user.type(input, 'xyzxyzxyz');
 
@@ -122,7 +118,7 @@ describe('UsersTable', () => {
     expectVisible('Ervin Howell');
   });
 
-  // ── Test 5: Jumlah hasil ──────────────────────────────
+  // ── Test 5:
   it('menampilkan jumlah user yang benar', () => {
     render(<UsersTable users={mockUsers} />);
     expect(screen.getByText(/Menampilkan 3 dari 3 users/)).toBeInTheDocument();

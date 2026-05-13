@@ -1,4 +1,4 @@
-// components/UserDetailCard.tsx
+
 
 import { User, Post, Todo } from '@/types';
 
@@ -14,7 +14,7 @@ export default function UserDetailCard({ user, posts, todos }: Props) {
 
   return (
     <div>
-      {/* Info utama */}
+      
       <div data-testid="user-card">
         <h1>{user.name}</h1>
         <p>@{user.username}</p>
@@ -22,14 +22,12 @@ export default function UserDetailCard({ user, posts, todos }: Props) {
         <p>{user.phone}</p>
       </div>
 
-      {/* Perusahaan */}
       <div data-testid="company-section">
         <h2>Perusahaan</h2>
         <p>{user.company.name}</p>
         <p>{user.company.catchPhrase}</p>
       </div>
 
-      {/* Alamat */}
       <div data-testid="address-section">
         <h2>Alamat</h2>
         <p>{user.address.street}, {user.address.suite}</p>
@@ -37,7 +35,6 @@ export default function UserDetailCard({ user, posts, todos }: Props) {
         <p>{user.address.zipcode}</p>
       </div>
 
-      {/* Posts */}
       <div data-testid="posts-section">
         <h2>Posts ({posts.length})</h2>
         {posts.length === 0 ? (
@@ -51,7 +48,7 @@ export default function UserDetailCard({ user, posts, todos }: Props) {
         )}
       </div>
 
-      {/* Todos */}
+   
       <div data-testid="todos-section">
         <h2>Todos ({completedTodos.length} selesai, {pendingTodos.length} pending)</h2>
         {pendingTodos.slice(0, 5).map((todo) => (

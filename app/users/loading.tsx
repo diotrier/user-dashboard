@@ -1,18 +1,16 @@
-// app/users/loading.tsx
-
 export default function Loading() {
   return (
     <main className="max-w-5xl mx-auto px-4 py-8">
       <div className="h-8 w-40 bg-gray-200 rounded animate-pulse mb-6" />
 
-      {/* Skeleton bar filter */}
+     
       <div className="flex gap-3 mb-4">
         <div className="h-10 w-64 bg-gray-200 rounded animate-pulse" />
         <div className="h-10 w-24 bg-gray-200 rounded animate-pulse" />
         <div className="h-10 w-32 bg-gray-200 rounded animate-pulse" />
       </div>
 
-      {/* Skeleton tabel */}
+  
       <div className="border border-gray-200 rounded-lg overflow-hidden">
         {/* Header */}
         <div className="bg-gray-100 grid grid-cols-6 gap-4 px-4 py-3">

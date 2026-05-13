@@ -1,10 +1,8 @@
-// app/users/page.tsx
-
 import { User, Post, Todo, EnrichedUser } from '@/types';
 import UsersTable from './UsersTable';
 
 async function getData() {
-  // Fetch 3 API secara paralel — lebih cepat!
+
   const [usersRes, postsRes, todosRes] = await Promise.all([
     fetch('https://jsonplaceholder.typicode.com/users', { next: { revalidate: 60 } }),
     fetch('https://jsonplaceholder.typicode.com/posts', { next: { revalidate: 60 } }),
@@ -19,16 +17,16 @@ async function getData() {
   const posts: Post[] = await postsRes.json();
   const todos: Todo[] = await todosRes.json();
 
-  // Gabungkan data: hitung aktivitas tiap user
+
   const enrichedUsers: EnrichedUser[] = users.map((user) => {
     const userPosts = posts.filter((p) => p.userId === user.id);
     const userTodos = todos.filter((t) => t.userId === user.id);
 
     return {
-      ...user,                                              // semua data user asli
-      totalPosts: userPosts.length,                        // jumlah post
-      completedTodos: userTodos.filter((t) => t.completed).length,  // todo selesai
-      pendingTodos: userTodos.filter((t) => !t.completed).length,   // todo belum
+      ...user,                                              
+      totalPosts: userPosts.length,                       
+      completedTodos: userTodos.filter((t) => t.completed).length,  
+      pendingTodos: userTodos.filter((t) => !t.completed).length,   
     };
   });
 

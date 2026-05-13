@@ -1,5 +1,3 @@
-// app/layout.tsx
-
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import './globals.css';
@@ -7,7 +5,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: {
     default: 'User Dashboard',
-    template: '%s | User Dashboard',  // misal: "Leanne Graham | User Dashboard"
+    template: '%s | User Dashboard',  
   },
   description: 'Dashboard manajemen user',
 };
@@ -35,7 +33,7 @@ export default function RootLayout({
           </div>
         </nav>
 
-        {/* Konten halaman */}
+
         {children}
       </body>
     </html>
